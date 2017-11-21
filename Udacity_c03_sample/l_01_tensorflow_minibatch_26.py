@@ -1,19 +1,45 @@
-from tensorflow.examples.tutorials.mnist import input_data
-import tensorflow as tf
+import math
+from pprint import pprint
 
-n_input = 784  # MNIST data input (img shape: 28*28)
-n_classes = 10  # MNIST total classes (0-9 digits)
 
-# Import MNIST data
-mnist = input_data.read_data_sets('/datasets/ud730/mnist', one_hot=True)
+def batches(batch_size, features, labels):
+    """
+    Create batches of features and labels
+    :param batch_size: The batch size
+    :param features: List of features
+    :param labels: List of labels
+    :return: Batches of (Features, Labels)
+    """
+    assert len(features) == len(labels)
+    # TODO: Implement batching
+    result = []
+    features_tmp = []
+    labels_tmp = []
+    for index in range(0,len(features)):
+        features_tmp.append(features[index])
+        labels_tmp.append(labels[index])
+        if (index+1) % batch_size == 0:
+            result.append([features_tmp,labels_tmp])
+            features_tmp = []
+            labels_tmp = []
 
-# The features are already scaled and the data is shuffled
-train_features = mnist.train.images
-test_features = mnist.test.images
+    if len(features_tmp) > 0:
+        result.append([features_tmp, labels_tmp])
+    return result
 
-train_labels = mnist.train.labels.astype(np.float32)
-test_labels = mnist.test.labels.astype(np.float32)
 
-# Weights & bias
-weights = tf.Variable(tf.random_normal([n_input, n_classes]))
-bias = tf.Variable(tf.random_normal([n_classes]))
+# 4 Samples of features
+example_features = [
+    ['F11','F12','F13','F14'],
+    ['F21','F22','F23','F24'],
+    ['F31','F32','F33','F34'],
+    ['F41','F42','F43','F44']]
+# 4 Samples of labels
+example_labels = [
+    ['L11','L12'],
+    ['L21','L22'],
+    ['L31','L32'],
+    ['L41','L42']]
+
+# PPrint prints data structures like 2d arrays, so they are easier to read
+pprint(batches(3, example_features, example_labels))
